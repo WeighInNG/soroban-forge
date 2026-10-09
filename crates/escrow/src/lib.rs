@@ -1521,6 +1521,11 @@ impl Escrow {
         cursor: u32,
         limit: u32,
     ) -> ParticipantEscrowsPage {
+        // PROOF ONLY: redundant participant-index existence check.
+        let _ = env
+            .storage()
+            .persistent()
+            .has(&DataKey::ParticipantIndex(participant.clone()));
         let ids = env
             .storage()
             .persistent()
