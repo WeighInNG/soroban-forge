@@ -15,8 +15,9 @@ jobs:
     env:
       CARGO_BUILD_JOBS: '2'
       CARGO_INCREMENTAL: '0'
-      TMPDIR: ${{ runner.temp }}
     steps:
+      - name: Use healthy runner temporary storage
+        run: echo "TMPDIR=$RUNNER_TEMP" >> "$GITHUB_ENV"
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0

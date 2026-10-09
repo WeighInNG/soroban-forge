@@ -16,7 +16,9 @@ identical. The hosted workflow records each actual immutable source SHA.
 The original upstream commit cannot be used directly as the Action base because
 it has no fixture file. Never pretend B is the original upstream commit.
 
-Control C adds only the proof workflow to B. Regression R adds exactly one
+Control C adds only the proof workflow/harness and documentation to B.
+A failed initial workflow expression run is preserved; the correction only changes
+runner setup and permits a sequence of harness commits with unchanged contracts. Regression R adds exactly one
 persistent ParticipantIndex existence check before the existing get in
 escrows_for_participant. Control compares B to C; regression and threshold compare C to R.
 Both regression and threshold branches point to R;

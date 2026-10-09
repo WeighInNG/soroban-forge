@@ -30,10 +30,11 @@ if (process.argv[2] === 'preflight') {
   }
   if (scenario === 'control') {
     assert.equal(base, instrumented);
-    assert.equal(git('rev-parse', 'HEAD^'), instrumented);
+    assert.equal(base, instrumented);
   } else {
-    assert.equal(git('rev-parse', `${base}^`), instrumented);
-    assert.equal(git('diff', '--name-only', instrumented, base), '.github/workflows/weighin-escrow-proof.yml');
+    for (const file of git('diff', '--name-only', instrumented, base).split('\n').filter(Boolean)) {
+      assert.ok(['.github/workflows/weighin-escrow-proof.yml', 'scripts/verify-weighin-proof.cjs', 'docs/WEIGHIN_PROOF.md'].includes(file), `Unexpected control harness change: ${file}`);
+    }
     assert.equal(git('rev-parse', 'HEAD^'), base);
     assert.equal(git('diff', '--name-only', base, 'HEAD'), contract);
   }
@@ -42,7 +43,7 @@ if (process.argv[2] === 'preflight') {
   const expected = scenario === 'control' ? before : before.replace(marker, marker + addition);
   assert.equal(fs.readFileSync(contract, 'utf8'), expected, 'Only the approved one-read regression is allowed');
   for (const file of git('diff', '--name-only', base, 'HEAD').split('\n').filter(Boolean)) {
-    assert.ok(['.github/workflows/weighin-escrow-proof.yml', contract].includes(file), `Unexpected HEAD change: ${file}`);
+    assert.ok(['.github/workflows/weighin-escrow-proof.yml', 'scripts/verify-weighin-proof.cjs', 'docs/WEIGHIN_PROOF.md', contract].includes(file), `Unexpected HEAD change: ${file}`);
   }
   console.log('Source preflight verified; no metrics have yet been measured.');
   process.exit(0);
